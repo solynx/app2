@@ -1,0 +1,40 @@
+version: '3'
+services:
+    web:
+        image: nginx:latest
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+            - ./sim247ex:/sim247ex
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./sim247ex:/sim247ex
+    mysql:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: 'Tq3lzKGOf6CykAxTUJQQbsks0Sc8x2PT'
+            MYSQL_USER: 'custom'
+            MYSQL_PASSWORD: 'dERKHwyNjjz2djRTI4TqRLqfYSWy1ZUU'
+            MYSQL_DATABASE: 'sim247admin'
+        volumes:
+            - mysqldata:/var/lib/mysql
+        ports:
+            - 3306:3306
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+        - mysql
+        depends_on:
+        - mysql
+        environment:
+        - PMA_HOST=mysql
+        - PMA_USER=root
+        - PMA_PASSWORD=Tq3lzKGOf6CykAxTUJQQbsks0Sc8x2PT
+        ports:
+        - 8080:80
+volumes:
+    mysqldata: {}
